@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SAMD
 =======
 # SAMD: Span-Aware Matryoshka Distillation for Cross-Tokenizer Embedding Models
@@ -216,12 +215,9 @@ Method-specific knobs (e.g., projection sizes, top-m token selection, Matryoshka
 
 ## Citation
 
-If you use this repository in academic work, please cite SAMD:
-
 ```bibtex
 @misc{samd2026,
   title        = {SAMD: Span-Aware Matryoshka Distillation for Cross-Tokenizer Embedding Models},
-  author       = {<Your Name(s)>},
   year         = {2026},
   howpublished = {GitHub repository},
 }
@@ -234,4 +230,3 @@ This project is released under the **MIT License**. See `LICENSE` for details.
 ## Acknowledgements
 
 This project compares multiple CTKD and Matryoshka-style methods. If you reuse or adapt code from other repositories/papers, please ensure you follow their licenses and cite the original works.
->>>>>>> c965565 (First commit: Upload source code)
