@@ -1,7 +1,8 @@
 # SAMD: Span-Aware Matryoshka Distillation for Cross-Tokenizer Embedding Models
 
-> Notebook reference implementation for cross-tokenizer knowledge distillation (CTKD) with **span-aware alignment** and **Matryoshka (nested) embeddings**.
+> **Notebook reference implementation** for cross-tokenizer knowledge distillation (CTKD) with **span-aware alignment** and **Matryoshka (nested) embeddings**.
 
+<!-- Badges (edit as needed) -->
 ![python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![pytorch](https://img.shields.io/badge/PyTorch-2.x-orange)
 ![transformers](https://img.shields.io/badge/Transformers-4.40%2B-yellow)
@@ -11,29 +12,29 @@
 
 **SAMD (Span-Aware Matryoshka Distillation)** targets two practical bottlenecks in embedding-model compression:
 
-1. **Tokenizer mismatch (cross-tokenizer KD)**: teacher and student tokenizers induce different vocabularies, segmentations, and sequence lengths—so token indices do not align.
-2. **Deployment rigidity**: fixed-dimensional embeddings are costly to store and cannot be easily truncated for different latency / storage budgets.
+1. **Tokenizer mismatch (cross-tokenizer KD):** teacher and student use different vocabularies/segmentations, so token indices do not align.
+2. **Deployment rigidity:** fixed-dimensional embeddings are costly to store and cannot be easily truncated for different latency/storage budgets.
 
 At a high level, SAMD combines:
 
-- **Span-aware alignment** using character-offset overlap to project teacher token relations into the student token space.
+- **Span-aware alignment** using character-offset overlap to map teacher token relations into the student token space.
 - **Matryoshka (nested) supervision** that enforces prefix-consistent teacher–student agreement at multiple embedding dimensions.
-- **Optional attention alignment (Span-CKA/IRA)** for structural supervision when teacher/student tokenization differs.
+- **Optional attention alignment (Span-CKA/IRA)** as structural supervision when tokenization differs.
 
 ## Evaluation protocol
 
-We evaluate representation quality on **three task families**, reporting both **in-domain** performance and **robustness on held-out OOD test sets**:
+We evaluate sentence representation quality on **three task families**, reporting both **in-domain** performance and **robustness on held-out OOD test sets**:
 
-- **Text classification**: TweetEval + Banking77 (in-domain), Emotion (OOD)
-- **Sentence-pair tasks**: MRPC + WiC (in-domain), SciTail (OOD)
-- **STS**: STS-B + SICK-R (in-domain), STS12 (OOD)
+- **Text classification:** TweetEval + Banking77 (in-domain), Emotion (OOD)
+- **Sentence-pair tasks:** MRPC + WiC (in-domain), SciTail (OOD)
+- **STS:** STS-B + SICK-R (in-domain), STS12 (OOD)
 
-**Metrics.** We follow standard metrics for each task family:
+**Metrics.** We follow standard metrics for each task family (configured in notebooks):
 
-- Classification / pair classification: accuracy or macro-F1 (as configured in the notebooks)
+- Classification / pair classification: accuracy or macro-F1
 - STS: Spearman correlation
 
-**Evaluation procedure.** For classification-style tasks, we train a lightweight classifier on **frozen** sentence embeddings. For STS tasks, we compute **cosine similarity** between embeddings.
+**Procedure.** For classification-style tasks, we train a lightweight classifier on **frozen** sentence embeddings. For STS, we compute **cosine similarity** between embeddings.
 
 ## Baselines
 
@@ -41,19 +42,15 @@ We compare SAMD against two groups of baselines.
 
 ### Cross-tokenizer KD (CTKD)
 
-Representative methods that handle tokenizer/vocabulary mismatch via explicit alignment or shared-space learning:
-
-- **MinED**: minimum-edit-distance token correspondence enabling direct token-level supervision.
-- **DSKD**: projects teacher/student outputs into a shared latent space (no strict 1:1 token mapping).
-- **CDM**: context-dependent, dynamic token correspondences inferred from contextual representations.
-- **EMO**: MinED-based intra-relational distillation + Optimal Transport alignment.
+- **MinED:** minimum-edit-distance token correspondence enabling direct token-level supervision.
+- **DSKD:** projects teacher/student outputs into a shared latent space (no strict 1:1 token mapping).
+- **CDM:** context-dependent, dynamic token correspondences inferred from contextual representations.
+- **EMO:** MinED-based intra-relational distillation + Optimal Transport alignment.
 
 ### Matryoshka / elastic embeddings
 
-Strong references for low-dimensional and truncatable embeddings:
-
-- **MRL**: Matryoshka Representation Learning (nested prefix embeddings; truncation at inference time).
-- **ESE**: extends Matryoshka-style learning across embedding dimensionality and model depth.
+- **MRL:** Matryoshka Representation Learning (nested prefix embeddings; truncation at inference time).
+- **ESE:** extends Matryoshka-style learning across embedding dimensionality and model depth.
 
 ## Repository structure
 
@@ -71,7 +68,8 @@ Strong references for low-dimensional and truncatable embeddings:
 │   └── SAMD-MRL.ipynb
 ├── data/
 │   ├── README.md
-│   └── multi-data/                 # evaluation CSVs (kept local by default)
+│   ├── merged_9_data_3k_each_ver2.csv
+│   └── multi-data/
 ├── scripts/
 │   ├── prepare_demo_multitask_data.py
 │   └── validate_notebooks.py
@@ -81,9 +79,15 @@ Strong references for low-dimensional and truncatable embeddings:
 └── README.md
 ```
 
-> **Data note:** `.gitignore` is configured to avoid committing real datasets by default. Keep your CSVs locally in `data/`.
+> **Data note:** Many users keep datasets out of Git. This repo includes sane `.gitignore` defaults; if you *do* want to version data, consider Git LFS.
 
-## Installation
+## Requirements
+
+- Python **3.10+**
+- PyTorch **2.x**
+- Transformers **4.40+**
+
+Install everything via pip or conda.
 
 ### Option A: pip + venv
 
@@ -102,18 +106,12 @@ conda activate samd
 
 ## Data
 
-Your local data layout is documented in `data/README.md`. In your setup, the key files are:
+Your data layout is documented in **`data/README.md`**.
 
-- Training CSV: `data/merged_9_data_3k_each_ver2.csv`
-- Evaluation directory: `data/multi-data/`
+In your setup, the key paths are:
 
-### Expected CSV columns
-
-The demo generator (`scripts/prepare_demo_multitask_data.py`) uses the following conventions (also a good reference for your real CSVs):
-
-- **Classification**: `text`, `label`
-- **Pair classification**: `sentence1`, `sentence2`, `label`
-- **STS**: `sentence1`, `sentence2`, `score`
+- **Training CSV:** `data/merged_9_data_3k_each_ver2.csv`
+- **Evaluation directory:** `data/multi-data/`
 
 ### Environment overrides
 
@@ -140,9 +138,7 @@ Launch Jupyter:
 jupyter lab
 ```
 
-### CTKD experiments
-
-Run any notebook under `CTKD/`:
+### CTKD notebooks
 
 - `CTKD/SAMD.ipynb` — SAMD
 - `CTKD/MINED.ipynb` — MinED baseline
@@ -150,19 +146,15 @@ Run any notebook under `CTKD/`:
 - `CTKD/CDM.ipynb` — CDM baseline
 - `CTKD/EMO.ipynb` — EMO baseline
 
-### Matryoshka experiments
-
-Run any notebook under `MRL/`:
+### Matryoshka notebooks
 
 - `MRL/MRL.ipynb` — MRL baseline
 - `MRL/ESE.ipynb` — ESE baseline
-- `MRL/SAMD-MRL.ipynb` — SAMD with Matryoshka training/evaluation
+- `MRL/SAMD-MRL.ipynb` — SAMD + Matryoshka training/evaluation
 
 ## Models
 
 ### Teachers (examples)
-
-The notebooks are set up to work with teachers such as:
 
 - `BAAI/bge-m3`
 - `Qwen/Qwen3-Embedding-0.6B`
@@ -176,9 +168,38 @@ The notebooks are set up to work with teachers such as:
 
 Most notebooks include a config cell where you can change `teacher_name` / `student_name`.
 
-### Hugging Face authentication (IMPORTANT)
+## Custom training schedule (SAMD knobs)
 
-Some models may require authentication (private/gated repos). **Do not hard-code tokens in notebooks.**
+The SAMD notebooks expose practical knobs for balancing:
+
+- **Task loss** (SimCSE / Matryoshka InfoNCE)
+- **Matryoshka prefix KD** (teacher → student)
+- **Span-aware attention alignment** (optional; computed every *N* steps)
+
+Weights are **ramped over training steps** to improve stability (e.g., delay attention alignment until the student geometry becomes reasonable).
+
+The core objective is:
+
+\[
+\mathcal{L} = w_{task}\,\mathcal{L}_{task} + \alpha_{kd}\,\big(\beta_{mrl}\,\mathcal{L}_{mrl} + \alpha_{attn}\,\mathcal{L}_{att}\big).
+\]
+
+In `CTKD/SAMD.ipynb`, look for the **"TUNING KNOBS (loss schedule)"** cell and adjust:
+
+- `w_task`, `alpha_kd`
+- `beta_mrl_max`, `mrl_start`, `mrl_ramp`, `mrl_weight_mode`
+- `alpha_attn_max`, `att_start`, `att_ramp`, `att_every`
+- token-selection controls: `top_frac`, `min_tokens`, `k_ira`
+
+Recommended ranges that are typically stable:
+
+- `alpha_attn_max`: **0.01–0.03** (keep attention loss small)
+- `top_frac`: **0.20–0.33**
+- `att_every`: **2–8** (trade-off compute vs. signal)
+
+## Hugging Face authentication (IMPORTANT)
+
+Some models may require authentication (private/gated repos). **Never hard-code tokens in notebooks.**
 
 Set an environment variable:
 
@@ -199,15 +220,7 @@ The default training configuration used across methods is summarized below:
 | Batch size | 32 | 32 | 32 | 32 | 32 | 32 | 32 |
 | LR scheduler | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine |
 
-### SAMD objective weighting (notebook knobs)
-
-The SAMD notebooks expose practical knobs for balancing:
-
-- **Task loss** (SimCSE / Matryoshka InfoNCE)
-- **Matryoshka prefix KD** (teacher → student)
-- **Span-aware attention alignment** (optional; computed every N steps)
-
-Weights are ramped over training steps to improve stability (e.g., delay attention alignment until the student geometry becomes reasonable).
+Method-specific knobs (e.g., projection details, token selection, Matryoshka slices) are configured inside notebooks.
 
 ## Reproducibility tips
 
@@ -217,14 +230,12 @@ Weights are ramped over training steps to improve stability (e.g., delay attenti
 
 ## Troubleshooting
 
-- **Blocked push (secret scanning)**: if GitHub blocks your push due to a token in history, remove it from notebooks and rewrite history (do not bypass).
-- **CUDA OOM (large teachers like LLM2Vec/Mistral)**: reduce batch size, use gradient accumulation, or choose a smaller teacher.
-- **bf16 issues**: if your GPU does not support bf16, switch to fp16 or fp32.
-- **Padding side**: some decoder-style teachers may require `padding_side="left"`.
+- **Blocked push (secret scanning):** if GitHub blocks your push due to a token in history, remove it from notebooks and rewrite history (do not bypass).
+- **CUDA OOM (large teachers like LLM2Vec/Mistral):** reduce batch size, use gradient accumulation, or choose a smaller teacher.
+- **bf16 issues:** if your GPU does not support bf16, switch to fp16 or fp32.
+- **Padding side:** some decoder-style teachers may require `padding_side="left"`.
 
 ## Citation
-
-If you use this repository in academic work, please cite:
 
 ```bibtex
 @misc{samd2026,
