@@ -1,0 +1,31 @@
+# Core runtime deps (derived from notebook imports)
+
+numpy>=1.23
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+tqdm>=4.66
+
+# Deep learning
+torch>=2.1
+transformers>=4.40
+accelerate>=0.30
+peft>=0.11
+
+# Token / string distance utilities
+python-Levenshtein>=0.25
+editdistance>=0.8
+
+# Notebook runtime
+jupyterlab>=4.0
+ipykernel>=6.29
+nbformat>=5.10
+
+# Misc
+kagglehub>=0.2
+
+# LLM2Vec (optional for some teacher choices)
+llm2vec>=0.1.4
+
+# Notebook pinned this for compatibility
+protobuf==3.20.3
