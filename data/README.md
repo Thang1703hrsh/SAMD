@@ -1,6 +1,6 @@
 # Data directory
 
-This project expects the following **local** data structure (matching the layout in your screenshots):
+This project expects the following data structure under the `data/` directory:
 
 ```
 data/
@@ -47,7 +47,7 @@ data/
 
 - Default training CSV: `data/merged_9_data_3k_each_ver2.csv`
 
-If your notebook/scripts support environment overrides, you can set:
+Notebooks and scripts support environment variable overrides for portability across local, Kaggle, and CI environments:
 
 ```bash
 export SAMD_TRAIN_CSV="data/merged_9_data_3k_each_ver2.csv"

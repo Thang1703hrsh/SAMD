@@ -106,9 +106,9 @@ conda activate samd
 
 ## Data
 
-Your data layout is documented in **`data/README.md`**.
+The data layout is documented in **`data/README.md`**.
 
-In your setup, the key paths are:
+The key paths are:
 
 - **Training CSV:** `data/merged_9_data_3k_each_ver2.csv`
 - **Evaluation directory:** `data/multi-data/`

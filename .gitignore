@@ -1,0 +1,19 @@
+# Data files (too large / sensitive)
+# data/merged_9_data_3k_each_ver2_noleak.csv
+# data/leakage_report.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+env/
+venv/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

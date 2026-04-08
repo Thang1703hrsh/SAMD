@@ -1,3 +1,22 @@
+"""Generate tiny synthetic CSV files that mimic the real evaluation dataset layout.
+
+Purpose:
+    Provides a fast smoke-test / CI dataset so that all notebooks can be executed
+    end-to-end without requiring the real (non-public) evaluation data. The
+    generated files are intentionally small (~80-200 rows each) and not suitable
+    for reporting research results.
+
+Usage:
+    python scripts/prepare_demo_multitask_data.py
+
+Output:
+    Writes CSV files to data/multi-data/ covering all three task families:
+    - Classification  : banking77, tweet, emotion  (columns: text, label)
+    - Pair tasks      : mrpc, scitail, wic         (columns: sentence1, sentence2, label)
+    - STS             : sick, sts12, stsb          (columns: sentence1, sentence2, score)
+
+    Each file uses a fixed random seed for reproducibility.
+"""
 from __future__ import annotations
 
 import random
