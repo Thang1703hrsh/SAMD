@@ -45,7 +45,7 @@ class LinearCKALoss(nn.Module):
     """Numerically stable linear CKA loss.
 
     Uses ||X^T Y||_F^2 / (||X^T X||_F * ||Y^T Y||_F) which avoids computing
-    an explicit N×N Gram matrix. Input shape: X, Y: [N, D]. Returns 1 - CKA.
+    an explicit NxN Gram matrix. Input shape: X, Y: [N, D]. Returns 1 - CKA.
     """
 
     def __init__(self, eps: float = 1e-8):
