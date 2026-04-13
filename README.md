@@ -14,7 +14,7 @@
 **SAMD (Span-Aware Matryoshka Distillation)** targets two practical bottlenecks in embedding-model compression:
 
 1. **Tokenizer mismatch (CTKD):** teacher and student use different vocabularies/segmentations, so token indices do not align.
-2. **Deployment rigidity:** fixed-dimensional embeddings are costly to store and hard to adapt to different latency/storage budgets.
+2. **Matryoshka Representation Learning:** fixed-dimensional embeddings are costly to store and hard to adapt to different latency/storage budgets.
 
 SAMD combines:
 
@@ -57,7 +57,16 @@ We compare SAMD against two baseline groups.
 ## Repository structure
 
 ```
+## Repository structure
+
 .
+├── code/
+│   ├── __init__.py
+│   ├── cka.py
+│   ├── data.py
+│   ├── eval.py
+│   ├── mrd_loss.py
+│   └── span_alignment.py
 ├── CTKD/
 │   ├── MINED.ipynb
 │   ├── DSDK.ipynb
@@ -80,8 +89,6 @@ We compare SAMD against two baseline groups.
 ├── LICENSE
 └── README.md
 ```
-
-**Data note.** Many users keep datasets out of Git. This repo includes sane `.gitignore` defaults; if you want to version data, consider **Git LFS**.
 
 ---
 
