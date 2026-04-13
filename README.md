@@ -338,19 +338,19 @@
   @misc{cdm2025,
     title        = {Enhancing Cross-Tokenizer Knowledge Distillation with Contextual Dynamical Mapping},
     year         = {2025},
-    howpublished = {\url{[https://github.com/pppa2019/ContexualDynamicMapping](https://github.com/pppa2019/ContexualDynamicMapping)}}
+    howpublished = {\url{https://github.com/pppa2019/ContexualDynamicMapping}}
   }
 
   @misc{dskd2024,
     title        = {Dual-Space Knowledge Distillation},
     year         = {2024},
-    howpublished = {\url{[https://github.com/songmzhang/DSKD](https://github.com/songmzhang/DSKD)}}
+    howpublished = {\url{https://github.com/songmzhang/DSKD}}
   }
 
   @misc{mined2024,
     title        = {Minimum Edit Distance Alignment for Cross-Tokenizer Knowledge Distillation},
     year         = {2024},
-    howpublished = {\url{[https://github.com/bminixhofer/tokenkit](https://github.com/bminixhofer/tokenkit)}}
+    howpublished = {\url{https://github.com/bminixhofer/tokenkit}}
   }
   ```
 
