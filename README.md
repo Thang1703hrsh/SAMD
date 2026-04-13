@@ -55,8 +55,6 @@
   ## Repository structure
 
   ```
-  ## Repository structure
-
   .
   ├── code/
   │   ├── __init__.py
@@ -292,7 +290,3 @@
   ## License
 
   Released under the **MIT License**. See `LICENSE` for details.
-
-  ## Acknowledgements
-
-  This repository compares multiple CTKD and Matryoshka-style methods. If you reuse or adapt code from other repositories/papers, please follow their licenses and cite the original works.
