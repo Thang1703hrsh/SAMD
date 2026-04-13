@@ -187,7 +187,7 @@
 
   ### Objective
 
-  ```
+  ```math
   \mathcal{L}
   = w_{\text{task}}\,\mathcal{L}_{\text{task}}
   + \alpha_{\text{kd}}
