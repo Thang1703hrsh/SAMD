@@ -240,9 +240,7 @@
 
   ---
 
-  ## How to Reproduce
-
-  ### Hardware requirements
+  ## Hardware requirements
 
   | Resource | Minimum | Recommended |
   |---|---|---|
@@ -253,57 +251,7 @@
   The student model runs on `cuda:0` and the frozen teacher on `cuda:1`.
   Single-GPU setups work for smaller teachers (BGE-M3, Qwen3-Embedding) by placing both models on `cuda:0`, but LLM2Vec-Mistral-7B requires two GPUs.
 
-  ### Step-by-step reproduction
-
-  **1. Install dependencies**
-
-  ```bash
-  # Option A: pip
-  python -m venv .venv
-  source .venv/bin/activate        # Windows: .venv\Scripts\activate
-  pip install -r requirements.txt
-
-  # Option B: conda
-  conda env create -f environment.yml
-  conda activate samd
-  ```
-
-  **2. Prepare data**
-
-  Place training and evaluation CSVs under `data/` as described in `data/README.md`, or generate tiny synthetic files for a smoke test:
-
-  ```bash
-  python scripts/prepare_demo_multitask_data.py
-  ```
-
-  **3. Run CTKD experiments**
-
-  Each notebook is self-contained: open it, verify the config cell (teacher/student names, paths), then run all cells.
-
-  ```bash
-  # SAMD (proposed method)
-  jupyter nbconvert --to notebook --execute CTKD/SAMD.ipynb --output SAMD_out.ipynb
-
-  # Baselines
-  jupyter nbconvert --to notebook --execute CTKD/MINED.ipynb --output MINED_out.ipynb
-  jupyter nbconvert --to notebook --execute CTKD/DSDK.ipynb  --output DSDK_out.ipynb
-  jupyter nbconvert --to notebook --execute CTKD/CDM.ipynb   --output CDM_out.ipynb
-  jupyter nbconvert --to notebook --execute CTKD/EMO.ipynb   --output EMO_out.ipynb
-  ```
-
-  **4. Run Matryoshka experiments**
-
-  ```bash
-  jupyter nbconvert --to notebook --execute MRL/SAMD-MRL.ipynb --output SAMD-MRL_out.ipynb
-  jupyter nbconvert --to notebook --execute MRL/MRL.ipynb      --output MRL_out.ipynb
-  jupyter nbconvert --to notebook --execute MRL/ESE.ipynb      --output ESE_out.ipynb
-  ```
-
-  **5. Collect results**
-
-  Each notebook prints evaluation tables (classification F1, pair accuracy, STS Spearman) at the end. Results are also saved in the executed output notebooks (`*_out.ipynb`).
-
-  ### Expected runtimes (2 x T4 16 GB)
+  ## Expected runtimes (2 x T4 16 GB)
 
   | Notebook | Teacher | Student | Time per run |
   |---|---|---|---|
