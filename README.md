@@ -280,27 +280,12 @@
 
   ---
 
-  ## Citation
+  ## Acknowledgements
 
-  ```bibtex
-  @misc{cdm2025,
-    title        = {Enhancing Cross-Tokenizer Knowledge Distillation with Contextual Dynamical Mapping},
-    year         = {2025},
-    howpublished = {https://github.com/pppa2019/ContexualDynamicMapping}
-  }
-
-  @misc{dskd2024,
-    title        = {Dual-Space Knowledge Distillation},
-    year         = {2024},
-    howpublished = {https://github.com/songmzhang/DSKD}
-  }
-
-  @misc{mined2024,
-    title        = {Minimum Edit Distance Alignment for Cross-Tokenizer Knowledge Distillation},
-    year         = {2024},
-    howpublished = {https://github.com/bminixhofer/tokenkit}
-  }
-  ```
+  Our code builds on:
+  - [CDM](https://github.com/pppa2019/ContexualDynamicMapping) (2025)
+  - [DSKD](https://github.com/songmzhang/DSKD) (Zhang et al., 2024)
+  - [MinED / tokenkit](https://github.com/bminixhofer/tokenkit) (Minixhofer et al., 2024)
 
   ---
 
