@@ -1,375 +1,369 @@
-# SAMD: Span-Aware Matryoshka Distillation for Cross-Tokenizer Embedding Models
+  # SAMD: Span-Aware Matryoshka Distillation for Cross-Tokenizer Embedding Models
 
-> **Notebook-first reference implementation** for cross-tokenizer knowledge distillation (CTKD) with **span-aware alignment** and **Matryoshka (nested) embeddings**.
+  > **Notebook-first reference implementation** for cross-tokenizer knowledge distillation (CTKD) with **span-aware alignment** and **Matryoshka (nested) embeddings**.
 
-![python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![pytorch](https://img.shields.io/badge/PyTorch-2.x-orange)
-![transformers](https://img.shields.io/badge/Transformers-4.40%2B-yellow)
-![license](https://img.shields.io/badge/License-MIT-green)
+  ![python](https://img.shields.io/badge/Python-3.10%2B-blue)
+  ![pytorch](https://img.shields.io/badge/PyTorch-2.x-orange)
+  ![transformers](https://img.shields.io/badge/Transformers-4.40%2B-yellow)
+  ![license](https://img.shields.io/badge/License-MIT-green)
 
----
+  ---
 
-## What this repo is about
+  ## What this repo is about
 
-**SAMD (Span-Aware Matryoshka Distillation)** targets two practical bottlenecks in embedding-model compression:
+  **SAMD (Span-Aware Matryoshka Distillation)** targets two practical bottlenecks in embedding-model compression:
 
-1. **Tokenizer mismatch (CTKD):** teacher and student use different vocabularies/segmentations, so token indices do not align.
-2. **Matryoshka Representation Learning:** fixed-dimensional embeddings are costly to store and hard to adapt to different latency/storage budgets.
+  1. **Tokenizer mismatch (CTKD):** teacher and student use different vocabularies/segmentations, so token indices do not align.
+  2. **Matryoshka Representation Learning:** fixed-dimensional embeddings are costly to store and hard to adapt to different latency/storage budgets.
 
-SAMD combines:
+  SAMD combines:
 
-- **Span-aware alignment** using *character-offset overlap* to map teacher token relations into the student token space.
-- **Matryoshka supervision** enforcing prefix-consistent teacher–student agreement at multiple embedding dimensions.
-- **Optional structural supervision** via **Span-CKA / IRA** (attention alignment), computed sparsely to reduce overhead.
+  - **Span-aware alignment** using *character-offset overlap* to map teacher token relations into the student token space.
+  - **Matryoshka supervision** enforcing prefix-consistent teacher–student agreement at multiple embedding dimensions.
+  - **Optional structural supervision** via **Span-CKA / IRA** (attention alignment), computed sparsely to reduce overhead.
 
----
+  ---
 
-## Evaluation protocol
+  ## Evaluation protocol
 
-We evaluate representation quality on **three task families**, reporting both **in-domain** performance and **robustness on held-out OOD test sets**.
+  We evaluate representation quality on **three task families**, reporting both **in-domain** performance and **robustness on held-out OOD test sets**.
 
-| Task family | In-domain datasets | OOD dataset | Metric (default) | Evaluation procedure |
-|---|---|---|---|---|
-| Text classification | TweetEval, Banking77 | Emotion | Accuracy / Macro-F1 | Train a lightweight classifier on **frozen** embeddings |
-| Sentence-pair tasks | MRPC, WiC | SciTail | Accuracy / AP (per notebook) | Train a lightweight classifier on **frozen** embeddings |
-| STS | STS-B, SICK-R | STS12 | Spearman | Cosine similarity between embeddings |
+  | Task family | In-domain datasets | OOD dataset | Metric (default) | Evaluation procedure |
+  |---|---|---|---|---|
+  | Text classification | TweetEval, Banking77 | Emotion | Accuracy / Macro-F1 | Train a lightweight classifier on **frozen** embeddings |
+  | Sentence-pair tasks | MRPC, WiC | SciTail | Accuracy / AP (per notebook) | Train a lightweight classifier on **frozen** embeddings |
+  | STS | STS-B, SICK-R | STS12 | Spearman | Cosine similarity between embeddings |
 
-> Exact metric choice is configured inside each notebook (some tasks use macro-F1, some use accuracy/AP).
+  <!-- > Exact metric choice is configured inside each notebook (some tasks use macro-F1, some use accuracy/AP). -->
 
----
+  ---
 
-## Baselines
+  ## Baselines
 
-We compare SAMD against two baseline groups.
+  We compare SAMD against two baseline groups.
 
-### Cross-tokenizer KD (CTKD)
-- **MinED:** minimum-edit-distance token correspondence for direct token-level supervision.
-- **DSKD:** projects teacher/student outputs into a shared latent space (no strict 1:1 token mapping).
-- **CDM:** context-dependent, dynamic token correspondences inferred from contextual representations.
-- **EMO:** MinED-based intra-relational distillation + Optimal Transport alignment.
+  ### Cross-tokenizer KD (CTKD)
+  - **MinED:** minimum-edit-distance token correspondence for direct token-level supervision.
+  - **DSKD:** projects teacher/student outputs into a shared latent space (no strict 1:1 token mapping).
+  - **CDM:** context-dependent, dynamic token correspondences inferred from contextual representations.
+  - **EMO:** MinED-based intra-relational distillation + Optimal Transport alignment.
 
-### Matryoshka / elastic embeddings
-- **MRL:** Matryoshka Representation Learning (nested prefix embeddings; truncation at inference time).
-- **ESE:** extends Matryoshka-style learning across embedding dimensionality and model depth.
+  ### Matryoshka / elastic embeddings
+  - **MRL:** Matryoshka Representation Learning (nested prefix embeddings; truncation at inference time).
+  - **ESE:** extends Matryoshka-style learning across embedding dimensionality and model depth.
 
----
+  ---
 
-## Repository structure
+  ## Repository structure
 
-```
-## Repository structure
+  ```
+  ## Repository structure
 
-.
-├── code/
-│   ├── __init__.py
-│   ├── cka.py
-│   ├── data.py
-│   ├── eval.py
-│   ├── mrd_loss.py
-│   └── span_alignment.py
-├── CTKD/
-│   ├── MINED.ipynb
-│   ├── DSDK.ipynb
-│   ├── CDM.ipynb
-│   ├── EMO.ipynb
-│   └── SAMD.ipynb
-├── MRL/
-│   ├── MRL.ipynb
-│   ├── ESE.ipynb
-│   └── SAMD-MRL.ipynb
-├── data/
-│   ├── README.md
-│   ├── merged_9_data_3k_each_ver2.csv
-│   └── multi-data/
-├── scripts/
-│   ├── prepare_demo_multitask_data.py
-│   └── validate_notebooks.py
-├── requirements.txt
-├── environment.yml
-├── LICENSE
-└── README.md
-```
+  .
+  ├── code/
+  │   ├── __init__.py
+  │   ├── cka.py
+  │   ├── data.py
+  │   ├── eval.py
+  │   ├── mrd_loss.py
+  │   └── span_alignment.py
+  ├── CTKD/
+  │   ├── MINED.ipynb
+  │   ├── DSDK.ipynb
+  │   ├── CDM.ipynb
+  │   ├── EMO.ipynb
+  │   └── SAMD.ipynb
+  ├── MRL/
+  │   ├── MRL.ipynb
+  │   ├── ESE.ipynb
+  │   └── SAMD-MRL.ipynb
+  ├── data/
+  │   ├── README.md
+  │   ├── merged_9_data_3k_each_ver2.csv
+  │   └── multi-data/
+  ├── scripts/
+  │   ├── prepare_demo_multitask_data.py
+  │   └── validate_notebooks.py
+  ├── requirements.txt
+  ├── environment.yml
+  ├── LICENSE
+  └── README.md
+  ```
 
----
+  ---
 
-## Installation
+  ## Installation
 
-### Option A: pip + venv
+  ### Option A: pip + venv
 
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+  ```bash
+  python -m venv .venv
+  source .venv/bin/activate  # Windows: .venv\Scripts\activate
+  pip install -r requirements.txt
+  ```
 
-### Option B: conda
+  ### Option B: conda
 
-```bash
-conda env create -f environment.yml
-conda activate samd
-```
+  ```bash
+  conda env create -f environment.yml
+  conda activate samd
+  ```
 
----
+  ---
 
-## Data
+  ## Data
 
-The data layout is documented in **`data/README.md`**.
+  The data layout is documented in **`data/README.md`**.
 
-The key paths are:
+  The key paths are:
 
-- **Training CSV:** `data/merged_9_data_3k_each_ver2.csv`
-- **Evaluation directory:** `data/multi-data/`
+  - **Training CSV:** `data/merged_9_data_3k_each_ver2.csv`
+  - **Evaluation directory:** `data/multi-data/`
 
-### Environment overrides
+  ### Environment overrides
 
-Most notebooks support environment variables so paths work across Kaggle / local / GitHub:
+  Most notebooks support environment variables so paths work across Kaggle / local / GitHub:
 
-```bash
-export SAMD_TRAIN_CSV="data/merged_9_data_3k_each_ver2.csv"
-export SAMD_EVAL_DIR="data/multi-data"
-```
+  ```bash
+  export SAMD_TRAIN_CSV="data/merged_9_data_3k_each_ver2.csv"
+  export SAMD_EVAL_DIR="data/multi-data"
+  ```
 
-### (Optional) generate tiny synthetic CSVs
+  ### (Optional) generate tiny synthetic CSVs
 
-```bash
-python scripts/prepare_demo_multitask_data.py
-```
+  ```bash
+  python scripts/prepare_demo_multitask_data.py
+  ```
 
-> The synthetic data is intentionally tiny and not meant for reporting results.
+  > The synthetic data is intentionally tiny and not meant for reporting results.
 
----
+  ---
 
-## Running experiments
+  ## Running experiments
 
-Launch Jupyter:
+  Launch Jupyter:
 
-```bash
-jupyter lab
-```
+  ```bash
+  jupyter lab
+  ```
 
-### CTKD notebooks
-- `CTKD/SAMD.ipynb` — SAMD
-- `CTKD/MINED.ipynb` — MinED baseline
-- `CTKD/DSDK.ipynb` — DSKD baseline
-- `CTKD/CDM.ipynb` — CDM baseline
-- `CTKD/EMO.ipynb` — EMO baseline
+  ### CTKD notebooks
+  - `CTKD/SAMD.ipynb` — SAMD
+  - `CTKD/MINED.ipynb` — MinED baseline
+  - `CTKD/DSDK.ipynb` — DSKD baseline
+  - `CTKD/CDM.ipynb` — CDM baseline
+  - `CTKD/EMO.ipynb` — EMO baseline
 
-### Matryoshka notebooks
-- `MRL/MRL.ipynb` — MRL baseline
-- `MRL/ESE.ipynb` — ESE baseline
-- `MRL/SAMD-MRL.ipynb` — SAMD + Matryoshka training/evaluation
+  ### Matryoshka notebooks
+  - `MRL/MRL.ipynb` — MRL baseline
+  - `MRL/ESE.ipynb` — ESE baseline
+  - `MRL/SAMD-MRL.ipynb` — SAMD + Matryoshka training/evaluation
 
----
+  ---
 
-## Models
+  ## Models
 
-### Teachers (examples)
-- `BAAI/bge-m3`
-- `Qwen/Qwen3-Embedding-0.6B`
-- `McGill-NLP/LLM2Vec-Mistral-7B-Instruct-v2-mntp` (and supervised variant)
+  ### Teachers (examples)
+  - `BAAI/bge-m3`
+  - `Qwen/Qwen3-Embedding-0.6B`
+  - `McGill-NLP/LLM2Vec-Mistral-7B-Instruct-v2-mntp` (and supervised variant)
 
-### Students
-- `huawei-noah/TinyBERT_General_4L_312D`
-- `huawei-noah/TinyBERT_General_6L_768D`
-- `bert-base-uncased`
+  ### Students
+  - `huawei-noah/TinyBERT_General_4L_312D`
+  - `huawei-noah/TinyBERT_General_6L_768D`
+  - `bert-base-uncased`
 
-Most notebooks include a config cell where you can change `teacher_name` / `student_name`.
+  Most notebooks include a config cell where you can change `teacher_name` / `student_name`.
 
----
+  ---
 
-## Custom training schedule (SAMD knobs)
+  ## Custom training schedule (SAMD knobs)
 
-The SAMD notebooks expose practical knobs for balancing:
+  The SAMD notebooks expose practical knobs for balancing:
 
-- **Task loss** (SimCSE / Matryoshka InfoNCE)
-- **Matryoshka prefix KD** (teacher → student)
-- **Span-aware attention alignment** (optional; computed every *N* steps)
+  - **Task loss** (SimCSE / Matryoshka InfoNCE)
+  - **Matryoshka prefix KD** (teacher → student)
+  - **Span-aware attention alignment** (optional; computed every *N* steps)
 
-Weights are **ramped over training steps** to improve stability (e.g., delay attention alignment until the student geometry becomes reasonable).
+  Weights are **ramped over training steps** to improve stability (e.g., delay attention alignment until the student geometry becomes reasonable).
 
-### Objective
+  ### Objective
 
-> GitHub renders math reliably using fenced blocks:
+  <!-- > GitHub renders math reliably using fenced blocks: -->
 
-```math
-\mathcal{L}
-= w_{\text{task}}\,\mathcal{L}_{\text{task}}
-+ \alpha_{\text{kd}}
-\Big(
-\beta_{\text{mrl}}\,\mathcal{L}_{\text{mrl}}
-+ \alpha_{\text{attn}}\,\mathcal{L}_{\text{att}}
-\Big).
-```
+  ```math
+  \mathcal{L}
+  = w_{\text{task}}\,\mathcal{L}_{\text{task}}
+  + \alpha_{\text{kd}}
+  \Big(
+  \beta_{\text{mrl}}\,\mathcal{L}_{\text{mrl}}
+  + \alpha_{\text{attn}}\,\mathcal{L}_{\text{att}}
+  \Big).
+  ```
 
-### Key hyperparameters
+  ### Key hyperparameters
 
-In `CTKD/SAMD.ipynb`, look for **"TUNING KNOBS (loss schedule)"** and adjust:
+  In `CTKD/SAMD.ipynb`, look for **"TUNING KNOBS (loss schedule)"** and adjust:
 
-- `w_task`, `alpha_kd`
-- `beta_mrl_max`, `mrl_start`, `mrl_ramp`, `mrl_weight_mode`
-- `alpha_attn_max`, `att_start`, `att_ramp`, `att_every`
-- token-selection controls: `top_frac`, `min_tokens`, `k_ira`
+  - `w_task`, `alpha_kd`
+  - `beta_mrl_max`, `mrl_start`, `mrl_ramp`, `mrl_weight_mode`
+  - `alpha_attn_max`, `att_start`, `att_ramp`, `att_every`
+  - token-selection controls: `top_frac`, `min_tokens`, `k_ira`
 
-**Typically stable ranges**
-- `alpha_attn_max`: **0.01–0.03**
-- `top_frac`: **0.20–0.33**
-- `att_every`: **2–8**
+  **Typically stable ranges**
+  - `alpha_attn_max`: **0.01–0.03**
+  - `top_frac`: **0.20–0.33**
+  - `att_every`: **2–8**
 
----
+  ---
 
-## Hugging Face authentication (IMPORTANT)
+  ## Hugging Face authentication (IMPORTANT)
 
-Some models may require authentication (private/gated repos). **Never hard-code tokens in notebooks.**
+  Some models may require authentication (private/gated repos). **Never hard-code tokens in notebooks.**
 
-Set an environment variable:
+  Set an environment variable:
 
-```bash
-export HF_TOKEN="<your_hf_token>"
-```
+  ```bash
+  export HF_TOKEN="<your_hf_token>"
+  ```
 
-Or create a local `.env` (ignored by git) based on `.env.example`.
+  Or create a local `.env` (ignored by git) based on `.env.example`.
 
----
+  ---
 
-## Training configuration
+  ## Training configuration
 
-| Setting | DSKD | CDM | MinED | EMO | **SAMD** | MRL | ESE |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Epochs | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
-| Learning rate | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 |
-| Batch size | 32 | 32 | 32 | 32 | 32 | 32 | 32 |
-| LR scheduler | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine |
+  | Setting | DSKD | CDM | MinED | EMO | **SAMD** | MRL | ESE |
+  |---|---:|---:|---:|---:|---:|---:|---:|
+  | Epochs | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
+  | Learning rate | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 | 2e-5 |
+  | Batch size | 32 | 32 | 32 | 32 | 32 | 32 | 32 |
+  | LR scheduler | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine | Cosine |
 
-Method-specific knobs (e.g., projection details, token selection, Matryoshka slices) are configured inside notebooks.
+  Method-specific knobs (e.g., projection details, token selection, Matryoshka slices) are configured inside notebooks.
 
----
+  ---
 
-## How to Reproduce
+  ## How to Reproduce
 
-### Hardware requirements
+  ### Hardware requirements
 
-| Resource | Minimum | Recommended |
-|---|---|---|
-| GPU | 2 x NVIDIA T4 (16 GB VRAM each) | 2 x NVIDIA T4 or better |
-| System RAM | 16 GB | 32 GB |
-| Disk | 20 GB free | 50 GB free |
+  | Resource | Minimum | Recommended |
+  |---|---|---|
+  | GPU | 2 x NVIDIA T4 (16 GB VRAM each) | 2 x NVIDIA T4 or better |
+  | System RAM | 16 GB | 32 GB |
+  | Disk | 20 GB free | 50 GB free |
 
-The student model runs on `cuda:0` and the frozen teacher on `cuda:1`.
-Single-GPU setups work for smaller teachers (BGE-M3, Qwen3-Embedding) by placing both models on `cuda:0`, but LLM2Vec-Mistral-7B requires two GPUs.
+  The student model runs on `cuda:0` and the frozen teacher on `cuda:1`.
+  Single-GPU setups work for smaller teachers (BGE-M3, Qwen3-Embedding) by placing both models on `cuda:0`, but LLM2Vec-Mistral-7B requires two GPUs.
 
-### Step-by-step reproduction
+  ### Step-by-step reproduction
 
-**1. Install dependencies**
+  **1. Install dependencies**
 
-```bash
-# Option A: pip
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+  ```bash
+  # Option A: pip
+  python -m venv .venv
+  source .venv/bin/activate        # Windows: .venv\Scripts\activate
+  pip install -r requirements.txt
 
-# Option B: conda
-conda env create -f environment.yml
-conda activate samd
-```
+  # Option B: conda
+  conda env create -f environment.yml
+  conda activate samd
+  ```
 
-**2. Prepare data**
+  **2. Prepare data**
 
-Place training and evaluation CSVs under `data/` as described in `data/README.md`, or generate tiny synthetic files for a smoke test:
+  Place training and evaluation CSVs under `data/` as described in `data/README.md`, or generate tiny synthetic files for a smoke test:
 
-```bash
-python scripts/prepare_demo_multitask_data.py
-```
+  ```bash
+  python scripts/prepare_demo_multitask_data.py
+  ```
 
-**3. Run CTKD experiments**
+  **3. Run CTKD experiments**
 
-Each notebook is self-contained: open it, verify the config cell (teacher/student names, paths), then run all cells.
+  Each notebook is self-contained: open it, verify the config cell (teacher/student names, paths), then run all cells.
 
-```bash
-# SAMD (proposed method)
-jupyter nbconvert --to notebook --execute CTKD/SAMD.ipynb --output SAMD_out.ipynb
+  ```bash
+  # SAMD (proposed method)
+  jupyter nbconvert --to notebook --execute CTKD/SAMD.ipynb --output SAMD_out.ipynb
 
-# Baselines
-jupyter nbconvert --to notebook --execute CTKD/MINED.ipynb --output MINED_out.ipynb
-jupyter nbconvert --to notebook --execute CTKD/DSDK.ipynb  --output DSDK_out.ipynb
-jupyter nbconvert --to notebook --execute CTKD/CDM.ipynb   --output CDM_out.ipynb
-jupyter nbconvert --to notebook --execute CTKD/EMO.ipynb   --output EMO_out.ipynb
-```
+  # Baselines
+  jupyter nbconvert --to notebook --execute CTKD/MINED.ipynb --output MINED_out.ipynb
+  jupyter nbconvert --to notebook --execute CTKD/DSDK.ipynb  --output DSDK_out.ipynb
+  jupyter nbconvert --to notebook --execute CTKD/CDM.ipynb   --output CDM_out.ipynb
+  jupyter nbconvert --to notebook --execute CTKD/EMO.ipynb   --output EMO_out.ipynb
+  ```
 
-**4. Run Matryoshka experiments**
+  **4. Run Matryoshka experiments**
 
-```bash
-jupyter nbconvert --to notebook --execute MRL/SAMD-MRL.ipynb --output SAMD-MRL_out.ipynb
-jupyter nbconvert --to notebook --execute MRL/MRL.ipynb      --output MRL_out.ipynb
-jupyter nbconvert --to notebook --execute MRL/ESE.ipynb      --output ESE_out.ipynb
-```
+  ```bash
+  jupyter nbconvert --to notebook --execute MRL/SAMD-MRL.ipynb --output SAMD-MRL_out.ipynb
+  jupyter nbconvert --to notebook --execute MRL/MRL.ipynb      --output MRL_out.ipynb
+  jupyter nbconvert --to notebook --execute MRL/ESE.ipynb      --output ESE_out.ipynb
+  ```
 
-**5. Collect results**
+  **5. Collect results**
 
-Each notebook prints evaluation tables (classification F1, pair accuracy, STS Spearman) at the end. Results are also saved in the executed output notebooks (`*_out.ipynb`).
+  Each notebook prints evaluation tables (classification F1, pair accuracy, STS Spearman) at the end. Results are also saved in the executed output notebooks (`*_out.ipynb`).
 
-### Expected runtimes (2 x T4 16 GB)
+  ### Expected runtimes (2 x T4 16 GB)
 
-| Notebook | Teacher | Student | Time per run |
-|---|---|---|---|
-| `CTKD/SAMD.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~3 h |
-| `CTKD/SAMD.ipynb` | BGE-M3 (568M) | BERT-base | ~3.5 h |
-| `CTKD/SAMD.ipynb` | Qwen3-Embedding (0.6B) | TinyBERT-4L | ~3 h |
-| `CTKD/SAMD.ipynb` | Qwen3-Embedding (0.6B) | BERT-base | ~3.5 h |
-| `CTKD/SAMD.ipynb` | LLM2Vec-Mistral (7B) | TinyBERT-4L | ~4 h |
-| `CTKD/SAMD.ipynb` | LLM2Vec-Mistral (7B) | TinyBERT-6L | ~4 h |
-| `CTKD/EMO.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~4 h |
-| `CTKD/MINED.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~3 h |
-| `MRL/SAMD-MRL.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
-| `MRL/MRL.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
-| `MRL/ESE.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
+  | Notebook | Teacher | Student | Time per run |
+  |---|---|---|---|
+  | `CTKD/SAMD.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~3 h |
+  | `CTKD/SAMD.ipynb` | BGE-M3 (568M) | BERT-base | ~3.5 h |
+  | `CTKD/SAMD.ipynb` | Qwen3-Embedding (0.6B) | TinyBERT-4L | ~3 h |
+  | `CTKD/SAMD.ipynb` | Qwen3-Embedding (0.6B) | BERT-base | ~3.5 h |
+  | `CTKD/SAMD.ipynb` | LLM2Vec-Mistral (7B) | TinyBERT-4L | ~4 h |
+  | `CTKD/SAMD.ipynb` | LLM2Vec-Mistral (7B) | TinyBERT-6L | ~4 h |
+  | `CTKD/EMO.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~4 h |
+  | `CTKD/MINED.ipynb` | BGE-M3 (568M) | TinyBERT-4L | ~3 h |
+  | `MRL/SAMD-MRL.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
+  | `MRL/MRL.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
+  | `MRL/ESE.ipynb` | — | TinyBERT-6L / BERT | ~3 h |
 
-Full reproduction of all paper tables (3 teachers x 3 students x 5 CTKD methods + 2 backbones x 4 MRL methods) requires approximately **60-70 GPU-hours** on T4 hardware.
+  Full reproduction of all paper tables (3 teachers x 3 students x 5 CTKD methods + 2 backbones x 4 MRL methods) requires approximately **60-70 GPU-hours** on T4 hardware.
 
-### Reproducibility tips
+  ---
 
-- Fix random seeds (Python / NumPy / PyTorch) inside each notebook.
-- Log exact versions of `torch`, `transformers`, and `peft` when producing paper tables.
-- For large teachers, prefer a GPU runtime and set `torch_dtype` / `device_map` consistently.
+  ## Troubleshooting
 
----
+  - **Blocked push (secret scanning):** if GitHub blocks your push due to a token in history, remove it from notebooks and rewrite history (do not bypass).
+  - **CUDA OOM (large teachers like LLM2Vec/Mistral):** reduce batch size, use gradient accumulation, or choose a smaller teacher.
+  - **bf16 issues:** if your GPU does not support bf16, switch to fp16 or fp32.
+  - **Padding side:** some decoder-style teachers may require `padding_side="left"`.
 
-## Troubleshooting
+  ---
 
-- **Blocked push (secret scanning):** if GitHub blocks your push due to a token in history, remove it from notebooks and rewrite history (do not bypass).
-- **CUDA OOM (large teachers like LLM2Vec/Mistral):** reduce batch size, use gradient accumulation, or choose a smaller teacher.
-- **bf16 issues:** if your GPU does not support bf16, switch to fp16 or fp32.
-- **Padding side:** some decoder-style teachers may require `padding_side="left"`.
+  ## Citation
 
----
+  ```bibtex
+  @misc{cdm2025,
+    title        = {Enhancing Cross-Tokenizer Knowledge Distillation with Contextual Dynamical Mapping},
+    year         = {2025},
+    howpublished = {\url{[https://github.com/pppa2019/ContexualDynamicMapping](https://github.com/pppa2019/ContexualDynamicMapping)}}
+  }
 
-## Citation
+  @misc{dskd2024,
+    title        = {Dual-Space Knowledge Distillation},
+    year         = {2024},
+    howpublished = {\url{[https://github.com/songmzhang/DSKD](https://github.com/songmzhang/DSKD)}}
+  }
 
-```bibtex
-@misc{cdm2025,
-  title        = {Enhancing Cross-Tokenizer Knowledge Distillation with Contextual Dynamical Mapping},
-  year         = {2025},
-  howpublished = {\url{[https://github.com/pppa2019/ContexualDynamicMapping](https://github.com/pppa2019/ContexualDynamicMapping)}}
-}
+  @misc{mined2024,
+    title        = {Minimum Edit Distance Alignment for Cross-Tokenizer Knowledge Distillation},
+    year         = {2024},
+    howpublished = {\url{[https://github.com/bminixhofer/tokenkit](https://github.com/bminixhofer/tokenkit)}}
+  }
+  ```
 
-@misc{dskd2024,
-  title        = {Dual-Space Knowledge Distillation},
-  year         = {2024},
-  howpublished = {\url{[https://github.com/songmzhang/DSKD](https://github.com/songmzhang/DSKD)}}
-}
+  ---
 
-@misc{mined2024,
-  title        = {Minimum Edit Distance Alignment for Cross-Tokenizer Knowledge Distillation},
-  year         = {2024},
-  howpublished = {\url{[https://github.com/bminixhofer/tokenkit](https://github.com/bminixhofer/tokenkit)}}
-}
-```
+  ## License
 
----
+  Released under the **MIT License**. See `LICENSE` for details.
 
-## License
+  ## Acknowledgements
 
-Released under the **MIT License**. See `LICENSE` for details.
-
-## Acknowledgements
-
-This repository compares multiple CTKD and Matryoshka-style methods. If you reuse or adapt code from other repositories/papers, please follow their licenses and cite the original works.
+  This repository compares multiple CTKD and Matryoshka-style methods. If you reuse or adapt code from other repositories/papers, please follow their licenses and cite the original works.
