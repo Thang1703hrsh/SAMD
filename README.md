@@ -34,8 +34,6 @@
   | Sentence-pair tasks | MRPC, WiC | SciTail | Accuracy / AP (per notebook) | Train a lightweight classifier on **frozen** embeddings |
   | STS | STS-B, SICK-R | STS12 | Spearman | Cosine similarity between embeddings |
 
-  <!-- > Exact metric choice is configured inside each notebook (some tasks use macro-F1, some use accuracy/AP). -->
-
   ---
 
   ## Baselines
@@ -189,9 +187,7 @@
 
   ### Objective
 
-  <!-- > GitHub renders math reliably using fenced blocks: -->
-
-  ```math
+  ```
   \mathcal{L}
   = w_{\text{task}}\,\mathcal{L}_{\text{task}}
   + \alpha_{\text{kd}}

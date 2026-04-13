@@ -1,7 +1,7 @@
 """CKA loss functions for knowledge distillation.
 
 CKALoss          — simple Frobenius-norm CKA on raw hidden states.
-LinearCKALoss    — numerically stable linear CKA; avoids explicit N×N Gram matrix.
+LinearCKALoss    — numerically stable linear CKA; avoids explicit NxN Gram matrix.
 MultiHeadCKALoss — aggregates per-head Gram matrices before CKA; used for SAMD
                    attention alignment.
 linear_cka_loss  — functional version of LinearCKALoss for use inside loops.

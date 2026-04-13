@@ -11,8 +11,8 @@ from typing import List, Optional, Tuple
 import torch
 import torch.nn.functional as F
 
-from samd.cka import linear_cka_loss
-from samd.span_alignment import build_span_overlap_matrix
+from code.cka import linear_cka_loss
+from code.span_alignment import build_span_overlap_matrix
 
 
 def info_nce(

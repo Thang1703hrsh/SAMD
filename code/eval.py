@@ -24,7 +24,7 @@ from sklearn.metrics import (
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from samd.data import ClasssifyDataset, PairDataset, STSDataset
+from code.data import ClasssifyDataset, PairDataset, STSDataset
 
 
 def collate_fn(batch: list, tokenizer, max_len: int = 128) -> dict:

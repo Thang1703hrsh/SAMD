@@ -4,7 +4,7 @@ Re-exports the public API from span_alignment, cka, mrd_loss, data, and eval
 so notebooks and scripts can import directly from ``samd``.
 """
 
-from samd.span_alignment import (
+from code.span_alignment import (
     build_span_overlap_matrix,
     align_tokens,
     build_reciprocal_mapping_from_token_lists,
@@ -12,14 +12,14 @@ from samd.span_alignment import (
     align_by_path_pool_many,
 )
 
-from samd.cka import (
+from code.cka import (
     CKALoss,
     LinearCKALoss,
     MultiHeadCKALoss,
     linear_cka_loss,
 )
 
-from samd.mrd_loss import (
+from code.mrd_loss import (
     info_nce,
     Matry_infonce,
     matryoshka_prefix_cosine_loss,
@@ -29,7 +29,7 @@ from samd.mrd_loss import (
     extract_teacher_sentence_embedding,
 )
 
-from samd.data import (
+from code.data import (
     TextPairRaw,
     DualTokenizerCollate,
     STSDataset,
@@ -37,7 +37,7 @@ from samd.data import (
     PairDataset,
 )
 
-from samd.eval import (
+from code.eval import (
     eval_sts_task,
     eval_classification_task,
     eval_pair_task,
